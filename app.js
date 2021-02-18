@@ -49,11 +49,22 @@ function init() {
   }
 
   function createRandomMines(target) {
+    const avoid = [
+      target, 
+      target + 1, 
+      target - 1, 
+      target + gameStats.boardWidth, 
+      target + gameStats.boardWidth + 1,
+      target + gameStats.boardWidth - 1,
+      target - gameStats.boardWidth + 1,
+      target - gameStats.boardWidth - 1
+    ]
     for (let i = 0; i < gameStats.mines; i++) {
       let mine = randomMineNumber()
       while (
         gameState.mines.includes(mine) || 
-        mine === target
+        avoid.includes(mine)
+        // mine === target
       ) {
         mine = randomMineNumber()
       }
