@@ -24,7 +24,7 @@ function init() {
     square.classList.add('square')
     square.style.width = `${gameStats.squareSize}px`
     square.style.height = `${gameStats.squareSize}px`
-    square.innerText = `${(i * gameStats.boardWidth) + j}`
+    // square.innerText = `${(i * gameStats.boardWidth) + j}`
     boardArray.push(square)
 
     gameContainer.appendChild(square)
@@ -70,6 +70,7 @@ function init() {
     if (gameState.mines.includes(targetIndex)) {
       hitMine()
     } else {
+      // propagate(targetIndex)
       checkSquaresAround(targetIndex)
       // hitClear(targetIndex)
     }
@@ -77,93 +78,195 @@ function init() {
   }
 
   function hitMine() {
-    console.log('You\'ve Lost')
+    gameState.mines.forEach(index =>{
+      boardArray[index].classList.add('bomb')
+    })
   }
 
   function hitClear(targetIndex) {
-    console.log('you\'re clear')
+    // console.log('you\'re clear')
     gameState.selected.push(targetIndex)
     addClearBackground(boardArray[targetIndex])
 
   }
 
   function addClearBackground(element) {
-    console.log(element)
+    // console.log(element)
     element.classList.add('clicked')
   }
 
   // ! Check around recursivly 
 
+  function getValue(targetIndex) {
+
+    let counter = 0
+
+
+
+    // counter = gameState.mines.filter(index => {
+    //   return (
+    //     index === targetIndex + 1 ||
+    //     index === targetIndex - 1 ||
+    //     index === targetIndex + gameStats.boardWidth ||
+    //     index === targetIndex - gameStats.boardWidth ||
+    //     index === targetIndex + gameStats.boardWidth + 1 ||
+    //     index === targetIndex - gameStats.boardWidth - 1 ||
+    //     index === targetIndex + gameStats.boardWidth - 1 ||
+    //     index === targetIndex - gameStats.boardWidth + 1
+    //   )
+    // }).length
+
+
+    if (!isFirstRow(targetIndex)) {
+      if (!isLeftWall(targetIndex)) {
+        if (gameState.mines.includes(targetIndex - gameStats.boardWidth - 1)) counter ++
+      }
+      if (!isRightWall(targetIndex)) {
+
+        if (gameState.mines.includes(targetIndex - gameStats.boardWidth + 1)) counter ++
+      }
+      if (gameState.mines.includes(targetIndex - gameStats.boardWidth)) counter ++
+    }
+
+    if (!isLastRow(targetIndex)) {
+      if (!isLeftWall(targetIndex)) {
+        if (gameState.mines.includes(targetIndex + gameStats.boardWidth - 1)) counter ++
+      }
+      if (!isRightWall(targetIndex)) {
+
+        if (gameState.mines.includes(targetIndex + gameStats.boardWidth + 1)) counter ++
+      }
+      if (gameState.mines.includes(targetIndex + gameStats.boardWidth)) counter ++
+    }
+
+    if (!isRightWall(targetIndex)) {
+      if (gameState.mines.includes(targetIndex + 1)) counter ++
+
+    }
+
+    if (!isLeftWall(targetIndex)) {
+      if (gameState.mines.includes(targetIndex - 1)) counter ++
+    }
+
+    return counter
+  }
+
+
+
+
   function checkSquaresAround(targetIndex) {
 
+    if (gameState.selected.includes(targetIndex)) return
+
+    const num = getValue(targetIndex)
+    if (num > 0) {
+      boardArray[targetIndex].innerText = `${num}`
+      hitClear(targetIndex)
+    } else {
+
+      hitClear(targetIndex)
+
+
+      if (!isRightWall(targetIndex)) {
+        checkSquaresAround(targetIndex + 1)
+      }
+      if (!isLeftWall(targetIndex)) {
+        checkSquaresAround(targetIndex - 1)
+      }
+
+      if (!isFirstRow(targetIndex)) {
+        if (!isLeftWall(targetIndex)) {
+          checkSquaresAround(targetIndex - gameStats.boardWidth - 1)
+        }
+        if (!isRightWall(targetIndex)) {
+          checkSquaresAround(targetIndex - gameStats.boardWidth + 1)
+        }
+        checkSquaresAround(targetIndex - gameStats.boardWidth)
+
+      }
+
+      if (!isLastRow(targetIndex)) {
+        if (!isLeftWall(targetIndex)) {
+          checkSquaresAround(targetIndex + gameStats.boardWidth - 1)
+        }
+        if (!isRightWall(targetIndex)) {
+          checkSquaresAround(targetIndex + gameStats.boardWidth + 1)
+        }
+        checkSquaresAround(targetIndex + gameStats.boardWidth)
+      }
+    }
     // Check the element you are on
     // If it is a mine, return
     // if is not a mine, change the background and call self on above, below, right and left
 
-    console.log('recursion', targetIndex)
-
-    if (
-      gameState.mines.includes(targetIndex) || 
-      gameState.selected.includes(targetIndex)
-    ) {
-      return
-    } else {
-      hitClear(targetIndex)
-      if (checkRight(targetIndex + 1)) checkSquaresAround(targetIndex + 1)
-      if (checkLeft(targetIndex - 1)) checkSquaresAround(targetIndex - 1)
-      if (botCheck(targetIndex + 10)) checkSquaresAround(targetIndex + 10)
-      if (topCheck(targetIndex - 10)) checkSquaresAround(targetIndex - 10)
-    }
   }
 
-  // * Refactor these into one function
 
-  function checkRight(indexCheck) {
-    return (indexCheck + 1) % gameStats.width === 0 ? false : true 
+  function mainCollision(index) {
+    return (
+      index < 0 ||
+      index > gameStats.boardHeight * gameStats.boardWidth ||
+      (index + 1) % gameStats.boardWidth === 0 ||
+      index % gameStats.boardWidth === 0
+    )
   }
 
-  function checkLeft(indexCheck) {
-    return indexCheck % gameStats.width === 0 ? false : true 
-  }
-  function topCheck(indexCheck) {
-    return (indexCheck - 10) < 0 ? false : true
+  function isFirstRow(index) {
+    return index < gameStats.boardWidth
   }
 
-  function botCheck(indexCheck) {
-    return (indexCheck - 10) >=  (gameStats.width * gameStats.height) ? false : true
+  function isLastRow(index) {
+    return index >= (gameStats.boardWidth * (gameStats.boardHeight - 1))
   }
 
-  // function wallCheck(indexCheck) {
-  //   if (
-  //     indexCheck % gameStats.width === 0 ||
-  //     (indexCheck + 1) % gameStats.width === 0 ||
-  //     indexCheck >= gameStats.width * gameStats.height ||
-  //     indexCheck < 0
-  //   ) {
-  //     return true
-  //   }
-  //   return false
-  // }
+  function isLeftWall(index) {
+    return index % gameStats.boardWidth === 0
+  }
+
+  function isRightWall(index) {
+    return (index + 1) % gameStats.boardWidth === 0
+  }
+
 
   // ! Click Functions
 
   function squareClick(e) {
     const targetSquareIndex = boardArray.indexOf(e.target)
-    console.log(e)
+    // console.log(e)
     if (!gameState.firstClicked) {
       createRandomMines(targetSquareIndex)
       gameState.firstClicked = true
+
+      // * TEMPORARY - TESTING BOMBS
+      // gameState.mines.forEach(index =>{
+      //   boardArray[index].classList.add('bomb')
+      // })
       // hitClear(targetSquareIndex)
+
       checkSquaresAround(targetSquareIndex)
     } else {
       clickHit(targetSquareIndex)
     }
 
+    winCheck()
+
+  }
+
+  function flag(e) {
+    e.preventDefault()
+    e.target.classList.add('flag')
+
+    return false
   }
 
 
 
+  // ! Win check
 
+  function winCheck() {
+    if ((gameStats.boardHeight * gameStats.boardHeight) -  gameState.selected.length === gameStats.mines)
+      console.log('WINNER')
+  }
 
 
   // ! INITIALISATION FUNCTIONS
@@ -179,6 +282,7 @@ function init() {
 
   boardArray.forEach(square => {
     square.addEventListener('click', squareClick)
+    square.addEventListener('contextmenu', flag)
   })
 
 }
