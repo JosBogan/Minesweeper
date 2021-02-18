@@ -16,3 +16,11 @@
   height: 40px;
   background-color: aqua;
 }
+
+.clicked {
+  background-color: whitesmoke;
+}
+
+.bomb {
+  background: darkblue;
+}
