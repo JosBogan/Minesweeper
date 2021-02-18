@@ -256,6 +256,7 @@ function init() {
 
       checkSquaresAround(targetSquareIndex)
     } else {
+      e.target.classList.remove('flag')
       clickHit(targetSquareIndex)
     }
 
@@ -265,6 +266,8 @@ function init() {
 
   function flag(e) {
     e.preventDefault()
+    const targetSquareIndex = boardArray.indexOf(e.target)
+    if (gameState.selected.includes(targetSquareIndex)) return
     e.target.classList.add('flag')
 
     return false
