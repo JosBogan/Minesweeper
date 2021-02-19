@@ -3,10 +3,10 @@ function init() {
   const gameContainer = document.querySelector('#game_board_container')
 
   const gameStats = {
-    boardWidth: 8,
-    boardHeight: 8,
+    boardWidth: 16,
+    boardHeight: 16,
     squareSize: 30,
-    mines: 10
+    mines: 40
   }
 
   const gameState = {
@@ -19,7 +19,7 @@ function init() {
 
   // ! BOARD CREATION FUNCTIONS
 
-  function createSquare(i, j) {
+  function createSquare() {
     const square = document.createElement('div')
     square.classList.add('square')
     square.style.width = `${gameStats.squareSize}px`
@@ -33,7 +33,7 @@ function init() {
   function createBoard() {
     for (let i = 0; i < gameStats.boardWidth; i++) {
       for (let j = 0; j < gameStats.boardHeight; j++) {
-        createSquare(i, j)
+        createSquare()
       }
     }
   }
@@ -54,6 +54,7 @@ function init() {
       target + 1, 
       target - 1, 
       target + gameStats.boardWidth, 
+      target - gameStats.boardWidth, 
       target + gameStats.boardWidth + 1,
       target + gameStats.boardWidth - 1,
       target - gameStats.boardWidth + 1,
@@ -243,7 +244,6 @@ function init() {
 
   function squareClick(e) {
     const targetSquareIndex = boardArray.indexOf(e.target)
-    // console.log(e)
     if (!gameState.firstClicked) {
       createRandomMines(targetSquareIndex)
       gameState.firstClicked = true
@@ -268,7 +268,7 @@ function init() {
     e.preventDefault()
     const targetSquareIndex = boardArray.indexOf(e.target)
     if (gameState.selected.includes(targetSquareIndex)) return
-    e.target.classList.add('flag')
+    e.target.classList.toggle('flag')
 
     return false
   }
