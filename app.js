@@ -276,7 +276,7 @@ function init() {
     if (gameState.selected.includes(targetSquareIndex)) return
     e.target.classList.contains('flag') ? gameState.flags++ : gameState.flags--
     flagsContainer.innerText = gameState.flags
-
+    
     e.target.classList.toggle('flag')
 
     return false
