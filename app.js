@@ -1,18 +1,23 @@
 function init() {
 
   const gameContainer = document.querySelector('#game_board_container')
+  const flagsContainer = document.querySelector('#flag_container')
+  const timer = document.querySelector('#timer')
 
   const gameStats = {
-    boardWidth: 16,
-    boardHeight: 16,
+    boardWidth: 8,
+    boardHeight: 8,
     squareSize: 30,
-    mines: 40
+    mines: 10
   }
 
   const gameState = {
     firstClicked: false,
     mines: [],
-    selected: []
+    selected: [],
+    flags: gameStats.mines,
+    timer: 0,
+    timerId: null
   }
 
   const boardArray = []
@@ -255,6 +260,7 @@ function init() {
       // hitClear(targetSquareIndex)
 
       checkSquaresAround(targetSquareIndex)
+      setTimer()
     } else {
       e.target.classList.remove('flag')
       clickHit(targetSquareIndex)
@@ -268,27 +274,46 @@ function init() {
     e.preventDefault()
     const targetSquareIndex = boardArray.indexOf(e.target)
     if (gameState.selected.includes(targetSquareIndex)) return
+    e.target.classList.contains('flag') ? gameState.flags++ : gameState.flags--
+    flagsContainer.innerText = gameState.flags
+
     e.target.classList.toggle('flag')
 
     return false
   }
 
+  // ! Countup Timer
 
+  function setTimer() {
+    gameState.timerId = setInterval(() => {
+      gameState.timer++
+      timer.innerText = gameState.timer
+    }, 1000)
+  }
 
   // ! Win check
 
   function winCheck() {
-    if ((gameStats.boardHeight * gameStats.boardHeight) -  gameState.selected.length === gameStats.mines)
-      console.log('WINNER')
+    if ((gameStats.boardHeight * gameStats.boardHeight) -  gameState.selected.length === gameStats.mines) {
+      clearInterval(gameState.timerId)
+      console.log('WINNER WINNER CHICKEN DINNER')
+    }
+
   }
 
 
   // ! INITIALISATION FUNCTIONS
 
+  function initialseGameState() {
+    timer.innerText = gameState.timer
+    flagsContainer.innerText = gameState.flags
+  }
+
 
   function initialiseGame() {
     adjustBoardSize()
     createBoard()
+    initialseGameState()
   }
 
   initialiseGame()
