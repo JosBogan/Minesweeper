@@ -45,6 +45,8 @@ function init() {
 
   function adjustBoardSize() {
     gameContainer.style.width = `${gameStats.squareSize * gameStats.boardWidth}px`
+    document.documentElement.style.setProperty('--width', gameStats.boardWidth)
+
   }
 
   // ! Create Mines
