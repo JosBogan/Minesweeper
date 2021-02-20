@@ -25,10 +25,10 @@ function init() {
 
   const boardRotation = {
     mouseDown: false,
-    userClick: 0,
-    userNew: 0,
+    userFirst: 0,
+    userSecond: 0,
     currentDeg: 0,
-    rotateSpeed: 500
+    rotateSpeed: 5
   }
 
   const boardArray = []
@@ -320,18 +320,19 @@ function init() {
 
   function setMouse(event) {
     event.stopPropagation()
+    if (event.button === 2) return
     switch (event.type) {
       case 'mousedown':
         boardRotation.mouseDown = true
-        boardRotation.userClick = event.pageX
+        boardRotation.userFirst = event.pageX
         break
       case 'mouseup':
         boardRotation.mouseDown = false
-        boardRotation.userClick = 0
+        boardRotation.userFirst = 0
         break
       default:
         boardRotation.mouseDown = false
-        boardRotation.userClick = 0
+        boardRotation.userFirst = 0
         break
     }
   }
@@ -339,8 +340,9 @@ function init() {
   function calculateRotation(event) {
     event.stopPropagation()
     if (!boardRotation.mouseDown) return
-    boardRotation.userNew = event.pageX
-    rotateFunction(boardRotation.userClick - boardRotation.userNew)
+    boardRotation.userSecond = event.pageX
+    rotateFunction(boardRotation.userFirst - boardRotation.userSecond)
+    boardRotation.userFirst = event.pageX
   }
 
   function rotateFunction(rot) {
