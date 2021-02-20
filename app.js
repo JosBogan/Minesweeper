@@ -1,12 +1,15 @@
 function init() {
 
+  const mainContainer = document.querySelector('#main_container')
   const gameContainer = document.querySelector('#game_board_container')
   const flagsContainer = document.querySelector('#flag_container')
   const timer = document.querySelector('#timer')
 
+
+
   const gameStats = {
-    boardWidth: 8,
-    boardHeight: 8,
+    boardWidth: 9,
+    boardHeight: 9,
     squareSize: 30,
     mines: 10
   }
@@ -18,6 +21,14 @@ function init() {
     flags: gameStats.mines,
     timer: 0,
     timerId: null
+  }
+
+  const boardRotation = {
+    mouseDown: false,
+    userClick: 0,
+    userNew: 0,
+    currentDeg: 0,
+    rotateSpeed: 500
   }
 
   const boardArray = []
@@ -45,7 +56,7 @@ function init() {
 
   function adjustBoardSize() {
     gameContainer.style.width = `${gameStats.squareSize * gameStats.boardWidth}px`
-    document.documentElement.style.setProperty('--width', gameStats.boardWidth)
+    // document.documentElement.style.setProperty('--width', gameStats.boardWidth)
 
   }
 
@@ -249,8 +260,9 @@ function init() {
 
   // ! Click Functions
 
-  function squareClick(e) {
-    const targetSquareIndex = boardArray.indexOf(e.target)
+  function squareClick(event) {
+    event.stopPropagation()
+    const targetSquareIndex = boardArray.indexOf(event.target)
     if (!gameState.firstClicked) {
       createRandomMines(targetSquareIndex)
       gameState.firstClicked = true
@@ -264,7 +276,7 @@ function init() {
       checkSquaresAround(targetSquareIndex)
       setTimer()
     } else {
-      e.target.classList.remove('flag')
+      event.target.classList.remove('flag')
       clickHit(targetSquareIndex)
     }
 
@@ -272,14 +284,15 @@ function init() {
 
   }
 
-  function flag(e) {
-    e.preventDefault()
-    const targetSquareIndex = boardArray.indexOf(e.target)
+  function flag(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    const targetSquareIndex = boardArray.indexOf(event.target)
     if (gameState.selected.includes(targetSquareIndex)) return
-    e.target.classList.contains('flag') ? gameState.flags++ : gameState.flags--
+    event.target.classList.contains('flag') ? gameState.flags++ : gameState.flags--
     flagsContainer.innerText = gameState.flags
     
-    e.target.classList.toggle('flag')
+    event.target.classList.toggle('flag')
 
     return false
   }
@@ -301,6 +314,41 @@ function init() {
       console.log('WINNER WINNER CHICKEN DINNER')
     }
 
+  }
+
+  // ! BoardMovement
+
+  function setMouse(event) {
+    event.stopPropagation()
+    switch (event.type) {
+      case 'mousedown':
+        boardRotation.mouseDown = true
+        boardRotation.userClick = event.pageX
+        break
+      case 'mouseup':
+        boardRotation.mouseDown = false
+        boardRotation.userClick = 0
+        break
+      default:
+        boardRotation.mouseDown = false
+        boardRotation.userClick = 0
+        break
+    }
+  }
+
+  function calculateRotation(event) {
+    event.stopPropagation()
+    if (!boardRotation.mouseDown) return
+    boardRotation.userNew = event.pageX
+    rotateFunction(boardRotation.userClick - boardRotation.userNew)
+  }
+
+  function rotateFunction(rot) {
+    const cssRotation = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rotation'))
+    // const cssRotation = document.documentElement.style.getP('--rotation')
+    const newRotation = cssRotation + (rot / boardRotation.rotateSpeed)
+    console.log(newRotation)
+    document.documentElement.style.setProperty('--rotation', `${newRotation}deg`)
   }
 
 
@@ -325,6 +373,10 @@ function init() {
     square.addEventListener('click', squareClick)
     square.addEventListener('contextmenu', flag)
   })
+
+  mainContainer.addEventListener('mousedown', setMouse)
+  document.addEventListener('mousemove', calculateRotation)
+  document.addEventListener('mouseup', setMouse)
 
 }
 
