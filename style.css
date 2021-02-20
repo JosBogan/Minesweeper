@@ -27,10 +27,11 @@
 .game_board_container {
   display: flex;
   flex-wrap: wrap;
+  
+  /* box-shadow: 0px 10px 80px -7px rgba(1, 1, 1, 0.5); */
 
   transform-style: preserve-3d;
   transform: perspective(400px) rotateX(30deg) rotateZ(var(--rotation));
-
 }
 
 .square {
