@@ -5,6 +5,9 @@ function init() {
   const flagsContainer = document.querySelector('#flag_container')
   const timer = document.querySelector('#timer')
 
+  const flip2D = document.querySelector('#d2')
+  const flip3D = document.querySelector('#d3')
+
 
 
   const gameStats = {
@@ -16,10 +19,12 @@ function init() {
 
   const gameState = {
     firstClicked: false,
+    canPlay: true,
     mines: [],
     selected: [],
     flags: gameStats.mines,
     timer: 0,
+    style: 3,
     timerId: null
   }
 
@@ -31,6 +36,8 @@ function init() {
     rotateSpeed: 5
   }
 
+  let numOfPropagatedSquares = 0
+
   const boardArray = []
 
   // ! BOARD CREATION FUNCTIONS
@@ -38,6 +45,7 @@ function init() {
   function createSquare() {
     const square = document.createElement('div')
     square.classList.add('square')
+    square.id = 'square'
     square.style.width = `${gameStats.squareSize}px`
     square.style.height = `${gameStats.squareSize}px`
     // square.innerText = `${(i * gameStats.boardWidth) + j}`
@@ -102,6 +110,8 @@ function init() {
     } else {
       // propagate(targetIndex)
       checkSquaresAround(targetIndex)
+      if (numOfPropagatedSquares > 10) calculateShake()
+      numOfPropagatedSquares = 0
       // hitClear(targetIndex)
     }
 
@@ -111,6 +121,9 @@ function init() {
     gameState.mines.forEach(index =>{
       boardArray[index].classList.add('bomb')
     })
+    clearInterval(gameState.timerId)
+    calculateShake()
+    gameState.canPlay = false
   }
 
   function hitClear(targetIndex) {
@@ -131,8 +144,6 @@ function init() {
 
     let counter = 0
 
-
-
     // counter = gameState.mines.filter(index => {
     //   return (
     //     index === targetIndex + 1 ||
@@ -145,7 +156,6 @@ function init() {
     //     index === targetIndex - gameStats.boardWidth + 1
     //   )
     // }).length
-
 
     if (!isFirstRow(targetIndex)) {
       if (!isLeftWall(targetIndex)) {
@@ -181,29 +191,23 @@ function init() {
     return counter
   }
 
-
-
-
   function checkSquaresAround(targetIndex) {
 
     if (gameState.selected.includes(targetIndex)) return
 
+    numOfPropagatedSquares++
     const num = getValue(targetIndex)
     if (num > 0) {
       boardArray[targetIndex].innerText = `${num}`
       hitClear(targetIndex)
     } else {
-
       hitClear(targetIndex)
-
-
       if (!isRightWall(targetIndex)) {
         checkSquaresAround(targetIndex + 1)
       }
       if (!isLeftWall(targetIndex)) {
         checkSquaresAround(targetIndex - 1)
       }
-
       if (!isFirstRow(targetIndex)) {
         if (!isLeftWall(targetIndex)) {
           checkSquaresAround(targetIndex - gameStats.boardWidth - 1)
@@ -212,9 +216,7 @@ function init() {
           checkSquaresAround(targetIndex - gameStats.boardWidth + 1)
         }
         checkSquaresAround(targetIndex - gameStats.boardWidth)
-
       }
-
       if (!isLastRow(targetIndex)) {
         if (!isLeftWall(targetIndex)) {
           checkSquaresAround(targetIndex + gameStats.boardWidth - 1)
@@ -225,9 +227,6 @@ function init() {
         checkSquaresAround(targetIndex + gameStats.boardWidth)
       }
     }
-    // Check the element you are on
-    // If it is a mine, return
-    // if is not a mine, change the background and call self on above, below, right and left
 
   }
 
@@ -262,6 +261,7 @@ function init() {
 
   function squareClick(event) {
     event.stopPropagation()
+    if (!gameState.canPlay) return
     const targetSquareIndex = boardArray.indexOf(event.target)
     if (!gameState.firstClicked) {
       createRandomMines(targetSquareIndex)
@@ -274,6 +274,8 @@ function init() {
       // hitClear(targetSquareIndex)
 
       checkSquaresAround(targetSquareIndex)
+      calculateShake()
+      numOfPropagatedSquares = 0
       setTimer()
     } else {
       event.target.classList.remove('flag')
@@ -287,9 +289,16 @@ function init() {
   function flag(event) {
     event.stopPropagation()
     event.preventDefault()
+    if (!gameState.canPlay) return
+    if (!gameState.firstClicked) return
     const targetSquareIndex = boardArray.indexOf(event.target)
     if (gameState.selected.includes(targetSquareIndex)) return
-    event.target.classList.contains('flag') ? gameState.flags++ : gameState.flags--
+    if (event.target.classList.contains('flag')) {
+      gameState.flags++
+    } else {
+      if (gameState.flags <= 0) return
+      gameState.flags--
+    }
     flagsContainer.innerText = gameState.flags
     
     event.target.classList.toggle('flag')
@@ -320,6 +329,7 @@ function init() {
 
   function setMouse(event) {
     event.stopPropagation()
+    if (gameState.style === 2) return
     if (event.button === 2) return
     switch (event.type) {
       case 'mousedown':
@@ -339,9 +349,10 @@ function init() {
 
   function calculateRotation(event) {
     event.stopPropagation()
+    if (gameState.style === 2) return
     if (!boardRotation.mouseDown) return
     boardRotation.userSecond = event.pageX
-    rotateFunction(boardRotation.userFirst - boardRotation.userSecond)
+    rotateFunction(boardRotation.userSecond - boardRotation.userFirst)
     boardRotation.userFirst = event.pageX
   }
 
@@ -353,10 +364,55 @@ function init() {
     document.documentElement.style.setProperty('--rotation', `${newRotation}deg`)
   }
 
+  // ! ANIMATION FUNCTION
+
+  function animationEnd(event) {
+    if (gameState.style === 2) return
+    if (event.animationName === 'shake') {
+      gameContainer.classList.remove('shake')
+    }
+  }
+
+  function calculateShake() {
+    if (gameState.style === 2) return
+    gameContainer.classList.add('shake')
+  }
+
+  // ! FLIP STYLE FUNCTION
+
+  function flipStyle(event) {
+    gameState.style = parseInt(event.target.value)
+
+    switch (gameState.style) {
+      case 2:
+        changeTo2D()
+        break
+      case 3:
+        changeTo3D()
+        break
+      default:
+        changeTo3D()
+    }
+
+
+  }
+
+  function changeTo2D() {
+    mainContainer.classList.replace('main_container', 'main_container_2D')
+    gameContainer.classList.replace('game_board_container', 'game_board_container_2D')
+    document.querySelectorAll('#square').forEach(element => element.classList.replace('square', 'square_2D'))
+  }
+
+  function changeTo3D() {
+    mainContainer.classList.replace('main_container_2D', 'main_container')
+    gameContainer.classList.replace('game_board_container_2D', 'game_board_container')
+    document.querySelectorAll('#square').forEach(element => element.classList.replace('square_2D', 'square'))
+  }
+
 
   // ! INITIALISATION FUNCTIONS
 
-  function initialseGameState() {
+  function resetDomGameState() {
     timer.innerText = gameState.timer
     flagsContainer.innerText = gameState.flags
   }
@@ -365,7 +421,43 @@ function init() {
   function initialiseGame() {
     adjustBoardSize()
     createBoard()
-    initialseGameState()
+    resetDomGameState()
+  }
+
+  function resetGameState() {
+
+    clearInterval(gameState.timerId)
+
+    gameState.firstClicked = false
+    gameState.canPlay = true
+    gameState.mines = []
+    gameState.selected = []
+    gameState.flags = gameStats.mines
+    gameState.timer = 0
+    gameState.timerId = null
+
+  }
+
+  function resetClasses() {
+    boardArray.forEach(element => {
+      element.classList.remove('bomb')
+      element.classList.remove('clicked')
+      element.classList.remove('flag')
+      element.innerText = ''
+    })
+  }
+
+  function resetFunction() {
+    resetClasses()
+    resetGameState()
+    resetDomGameState()
+  }
+
+  function resetGame(event) {
+    if (event.code === 'KeyZ') {
+      console.log('here')
+      resetFunction()
+    }
   }
 
   initialiseGame()
@@ -377,8 +469,15 @@ function init() {
   })
 
   mainContainer.addEventListener('mousedown', setMouse)
-  document.addEventListener('mousemove', calculateRotation)
   document.addEventListener('mouseup', setMouse)
+  document.addEventListener('mousemove', calculateRotation)
+  
+  document.addEventListener('keypress', resetGame)
+
+  document.addEventListener('animationend', animationEnd)
+
+  flip3D.addEventListener('click', flipStyle)
+  flip2D.addEventListener('click', flipStyle)
 
 }
 
