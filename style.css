@@ -22,6 +22,16 @@ header {
   justify-content: space-evenly;
 }
 
+.restart {
+  background-image: url(./assets/refresh.svg);
+  background-position: center;
+  background-size: cover;
+  padding: 5px;
+  width: 20px;
+  z-index: 5;
+  cursor: pointer;
+}
+
 .theme_switch {
   position: fixed;
   top: 50px;
@@ -105,6 +115,7 @@ header {
 }
 
 .game_board_container > .flag::after {
+  pointer-events: none;
   content: '';
   position: absolute;
   top: 0;
@@ -138,6 +149,7 @@ header {
 .game_board_container > .bomb::after {
   content: '';
   position: absolute;
+  pointer-events: none;
   top: 0;
   left: 0;
   width: 100%;
@@ -153,6 +165,7 @@ header {
 .game_board_container > .bomb::before {
   content: '';
   position: absolute;
+  pointer-events: none;
   top: 0;
   left: 0;
   width: 100%;
@@ -181,52 +194,6 @@ header {
 } */
 
 
-.shake {
-  animation: shake;
-  animation-duration: 0.5s;
-  animation-iteration-count: 1;
-}
-
-
-@keyframes shake {
-  10% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-4px, 4px, 5px);
-  }
-
-  20% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(2px, 4px, -1px);
-  }
-  30% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-2px, 2px, -1px);
-  }
-  
-  40% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(3px, -1px, 2px);
-  }
-  50% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(1px, -4px, 3px);
-  }
-
-  60%{
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-2px, 5px, -2px);
-  }
-  70%{
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-1px, -3px, 5px);
-  }
-
-  80% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(1px, -1px, -5px);
-  }
-  90% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(3px, -1px, 2px);
-  }
-
-  100% {
-    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(0px, 0px, 0px);
-  }
-}
-
-
 /* ! 2D */
 
 .main_container_2D {
@@ -238,6 +205,21 @@ header {
   background-color: black;
   color: white;
 }
+
+.main_container_2D .restart {
+  background-image: url(./assets/refreshW.svg);
+  background-position: center;
+  background-size: cover;
+  padding: 5px;
+  width: 20px;
+  z-index: 5;
+  cursor: pointer;
+}
+
+/* .rotate {
+  transition: all 1s;
+  transform: rotate(360deg);
+} */
 
 .main_container_2D header {
   margin-bottom: 20px;
@@ -338,4 +320,66 @@ header {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+}
+
+
+/* Animations */
+
+.shake {
+  animation: shake;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+}
+
+
+@keyframes shake {
+  10% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-4px, 4px, 5px);
+  }
+
+  20% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(2px, 4px, -1px);
+  }
+  30% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-2px, 2px, -1px);
+  }
+  
+  40% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(3px, -1px, 2px);
+  }
+  50% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(1px, -4px, 3px);
+  }
+
+  60%{
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-2px, 5px, -2px);
+  }
+  70%{
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(-1px, -3px, 5px);
+  }
+
+  80% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(1px, -1px, -5px);
+  }
+  90% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(3px, -1px, 2px);
+  }
+
+  100% {
+    transform: perspective(400px) rotateX(40deg) rotateZ(var(--rotation)) translate3d(0px, 0px, 0px);
+  }
+}
+
+.rotate {
+  animation: rotate;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes rotate {
+
+  100% {
+    transform: rotate(360deg)
+  }
 }

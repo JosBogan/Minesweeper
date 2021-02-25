@@ -4,6 +4,7 @@ function init() {
   const gameContainer = document.querySelector('#game_board_container')
   const flagsContainer = document.querySelector('#flag_container')
   const timer = document.querySelector('#timer')
+  const restart = document.querySelector('#restart')
 
   const flip2D = document.querySelector('#d2')
   const flip3D = document.querySelector('#d3')
@@ -370,6 +371,8 @@ function init() {
     if (gameState.style === 2) return
     if (event.animationName === 'shake') {
       gameContainer.classList.remove('shake')
+    } else if (event.animationName === 'rotate') {
+      restart.classList.remove('rotate')
     }
   }
 
@@ -455,7 +458,6 @@ function init() {
 
   function resetGame(event) {
     if (event.code === 'KeyZ') {
-      console.log('here')
       resetFunction()
     }
   }
@@ -476,6 +478,13 @@ function init() {
 
   document.addEventListener('animationend', animationEnd)
 
+
+  restart.addEventListener('click', () => {
+    if (!gameState.firstClicked) return
+    console.log('here')
+    restart.classList.add('rotate')
+    resetFunction()
+  })
   flip3D.addEventListener('click', flipStyle)
   flip2D.addEventListener('click', flipStyle)
 
