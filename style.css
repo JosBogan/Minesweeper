@@ -12,6 +12,40 @@
   font-family: 'Roboto Mono', monospace;
 }
 
+button {
+  background-color: white;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  transition: all 0.1s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+button.selected_button {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor:default;
+}
+
+button.selected_button:hover {
+  transform: none;
+}
+
+i {
+  pointer-events: none;
+}
+
 
 .no_highlight {
   user-select: none;

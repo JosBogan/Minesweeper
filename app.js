@@ -389,12 +389,18 @@ function init() {
     switch (gameState.style) {
       case 2:
         changeTo2D()
+        flip2D.classList.add('selected_button')
+        flip3D.classList.remove('selected_button')
         break
       case 3:
         changeTo3D()
+        flip3D.classList.add('selected_button')
+        flip2D.classList.remove('selected_button')
         break
       default:
         changeTo3D()
+        flip3D.classList.add('selected_button')
+        flip2D.classList.remove('selected_button')
     }
 
 
