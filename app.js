@@ -6,19 +6,26 @@ function init() {
   const timer = document.querySelector('#timer')
   const restart = document.querySelector('#restart')
 
+  // const winner = document.querySelector('.winner')
+
   const flip2D = document.querySelector('#d2')
   const flip3D = document.querySelector('#d3')
   const boardSizeButton = document.querySelector('.board_size_button')
   const boardSizeOptionsContainer = document.querySelector('.board_size_options')
   const boardSizeChangeButtons = document.querySelectorAll('.board_size_change_button') 
 
-
+  // const confettiStats = {
+  //   maxSize: 15,
+  //   minSize: 5,
+  //   colours: ['blue', 'red', 'green', 'purple', 'yellow']
+  // }
 
   const gameStats = {
     boardWidth: 9,
     boardHeight: 9,
     squareSize: 30,
-    mines: 10
+    mines: 10,
+    confettiList: []
   }
 
   const gameState = {
@@ -329,6 +336,7 @@ function init() {
   function winCheck() {
     if ((gameStats.boardHeight * gameStats.boardHeight) -  gameState.selected.length === gameStats.mines) {
       clearInterval(gameState.timerId)
+      // winner.style.display = 'block'
       console.log('WINNER WINNER CHICKEN DINNER')
     }
 
@@ -388,6 +396,26 @@ function init() {
     if (gameState.style === 2) return
     gameContainer.classList.add('shake')
   }
+
+  // ! Maybe for a later date!
+  // function randomSize() {
+  //   return Math.floor(Math.random() * (confettiStats.maxSize - confettiStats.min ) + confettiStats.min)
+  // }
+
+  // function randomColour() {
+  //   return confettiStats.colours[Math.floor(Math.random() * confettiStats.colours.length)]
+  // }
+
+  // function createConfetti() {
+  //   for (let i = 0; i < 30; i++) {
+  //     const confetti = document.createElement('div')
+  //     const randomSize = randomSize()
+  //     confetti.style.width = randomSize()
+  //     confetti.style.height = randomSize()
+  //     confetti.style.backgroundColor = randomColour()
+  //     confettiStats.confettiList.push(confetti)
+  //   }
+  // }
 
   // ! FLIP STYLE FUNCTION
 
@@ -534,6 +562,7 @@ function init() {
 
 
   function resetFunction() {
+    // winner.style.display = 'block'
     resetClasses()
     resetGameState()
     resetDomGameState()
