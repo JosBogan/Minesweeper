@@ -3,6 +3,7 @@
 :root {
   --width: 9;
   --rotation: 0deg;
+  --boardSizeOptionsDisplay: none;
 }
 
 * {
@@ -44,6 +45,20 @@ button.selected_button:hover {
 
 i {
   pointer-events: none;
+}
+
+.board_size_container {
+  position: relative;
+}
+
+.board_size_options_display {
+  display: var(--boardSizeOptionsDisplay);
+}
+
+.board_size_options {
+  position: absolute;
+  left: calc(-100% - 10px);
+  top: 0;
 }
 
 

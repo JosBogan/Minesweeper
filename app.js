@@ -8,6 +8,9 @@ function init() {
 
   const flip2D = document.querySelector('#d2')
   const flip3D = document.querySelector('#d3')
+  const boardSizeButton = document.querySelector('.board_size_button')
+  const boardSizeOptionsContainer = document.querySelector('.board_size_options')
+  const boardSizeChangeButtons = document.querySelectorAll('.board_size_change_button') 
 
 
 
@@ -39,7 +42,7 @@ function init() {
 
   let numOfPropagatedSquares = 0
 
-  const boardArray = []
+  let boardArray = []
 
   // ! BOARD CREATION FUNCTIONS
 
@@ -65,8 +68,7 @@ function init() {
 
   function adjustBoardSize() {
     gameContainer.style.width = `${gameStats.squareSize * gameStats.boardWidth}px`
-    // document.documentElement.style.setProperty('--width', gameStats.boardWidth)
-
+    console.log(gameStats.boardWidth)
   }
 
   // ! Create Mines
@@ -402,8 +404,10 @@ function init() {
         flip3D.classList.add('selected_button')
         flip2D.classList.remove('selected_button')
     }
+  }
 
-
+  function openBoardSizeOptions() {
+    boardSizeOptionsContainer.classList.toggle('board_size_options_display')
   }
 
   function changeTo2D() {
@@ -418,8 +422,55 @@ function init() {
     document.querySelectorAll('#square').forEach(element => element.classList.replace('square_2D', 'square'))
   }
 
+  function changeBoardSize(event) {
+    console.log(event.target.value)
+    switch (event.target.value) {
+      case 's':
+        gameStats.boardWidth = 9
+        gameStats.boardHeight = 9
+        gameStats.mines = 10
+        boardSizeChangeButtons[0].classList.add('selected_button')
+        boardSizeChangeButtons[1].classList.remove('selected_button')
+        boardSizeChangeButtons[2].classList.remove('selected_button')
+        boardSizeButton.innerHTML = '<i class="fas fa-stop"></i>'
+        break
+      case 'm':
+        gameStats.boardWidth = 15
+        gameStats.boardHeight = 15
+        gameStats.mines = 40
+        boardSizeChangeButtons[0].classList.remove('selected_button')
+        boardSizeChangeButtons[1].classList.add('selected_button')
+        boardSizeChangeButtons[2].classList.remove('selected_button')
+        boardSizeButton.innerHTML = '<i class="fas fa-th-large"></i>'
+        break
+      case 'l':
+        gameStats.boardWidth = 29
+        gameStats.boardHeight = 16
+        gameStats.mines = 99
+        boardSizeChangeButtons[0].classList.remove('selected_button')
+        boardSizeChangeButtons[1].classList.remove('selected_button')
+        boardSizeChangeButtons[2].classList.add('selected_button')
+        boardSizeButton.innerHTML = '<i class="fas fa-th"></i>'
+        break
+    }
+    openBoardSizeOptions()
+    removeOldBoard()
+    initialiseGame()
+    addEventsToSquares()
+    resetFunction()
+
+    if (gameState.style === 2) {
+      changeTo2D()
+    }
+  }
+
 
   // ! INITIALISATION FUNCTIONS
+
+  function removeOldBoard() {
+    gameContainer.innerHTML = ''
+    boardArray = []
+  }
 
   function resetDomGameState() {
     timer.innerText = gameState.timer
@@ -436,6 +487,7 @@ function init() {
   function resetGameState() {
 
     clearInterval(gameState.timerId)
+    console.log('getting here')
 
     gameState.firstClicked = false
     gameState.canPlay = true
@@ -456,6 +508,7 @@ function init() {
     })
   }
 
+
   function resetFunction() {
     resetClasses()
     resetGameState()
@@ -468,13 +521,18 @@ function init() {
     }
   }
 
+  function addEventsToSquares() {
+    boardArray.forEach(square => {
+      square.addEventListener('click', squareClick)
+      square.addEventListener('contextmenu', flag)
+    })
+
+  }
+
   initialiseGame()
+  addEventsToSquares()
 
 
-  boardArray.forEach(square => {
-    square.addEventListener('click', squareClick)
-    square.addEventListener('contextmenu', flag)
-  })
 
   mainContainer.addEventListener('mousedown', setMouse)
   document.addEventListener('mouseup', setMouse)
@@ -493,6 +551,12 @@ function init() {
   })
   flip3D.addEventListener('click', flipStyle)
   flip2D.addEventListener('click', flipStyle)
+  boardSizeButton.addEventListener('click', openBoardSizeOptions)
+
+
+  boardSizeChangeButtons.forEach(button => {
+    button.addEventListener('click', changeBoardSize)
+  })
 
 }
 
