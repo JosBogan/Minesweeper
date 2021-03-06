@@ -264,6 +264,9 @@ function init() {
 
   function squareClick(event) {
     event.stopPropagation()
+    if (getComputedStyle(boardSizeOptionsContainer).display !== 'none') {
+      openBoardSizeOptions()
+    }
     if (!gameState.canPlay) return
     const targetSquareIndex = boardArray.indexOf(event.target)
     if (!gameState.firstClicked) {
@@ -292,6 +295,9 @@ function init() {
   function flag(event) {
     event.stopPropagation()
     event.preventDefault()
+    if (getComputedStyle(boardSizeOptionsContainer).display !== 'none') {
+      openBoardSizeOptions()
+    }
     if (!gameState.canPlay) return
     if (!gameState.firstClicked) return
     const targetSquareIndex = boardArray.indexOf(event.target)
@@ -411,6 +417,9 @@ function init() {
   }
 
   function changeTo2D() {
+    if (getComputedStyle(boardSizeOptionsContainer).display !== 'none') {
+      openBoardSizeOptions()
+    }
     mainContainer.classList.replace('main_container', 'main_container_2D')
     gameContainer.classList.replace('game_board_container', 'game_board_container_2D')
     document.querySelectorAll('#square').forEach(element => element.classList.replace('square', 'square_2D'))
@@ -423,6 +432,9 @@ function init() {
   }
 
   function changeTo3D() {
+    if (getComputedStyle(boardSizeOptionsContainer).display !== 'none') {
+      openBoardSizeOptions()
+    }
     mainContainer.classList.replace('main_container_2D', 'main_container')
     gameContainer.classList.replace('game_board_container_2D', 'game_board_container')
     document.querySelectorAll('#square').forEach(element => element.classList.replace('square_2D', 'square'))
