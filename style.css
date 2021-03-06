@@ -327,6 +327,82 @@ header {
 .square_2D:nth-of-type(9n + 1) {
   border-left: 2px solid white;
 }
+/* ?  CHANGE TO MEDIUM */
+
+.square_2D.square_2D_m:nth-of-type(n) {
+  border-radius: 0 0 0 0;
+  border: 1px solid white;
+}
+
+.square_2D.square_2D_m:nth-of-type(1) {
+  border-radius: 10px 0 0 0 ;
+}
+.square_2D.square_2D_m:nth-of-type(15) {
+  border-radius: 0 10px 0 0;
+}
+
+.square_2D.square_2D_m:nth-of-type(211) {
+  border-radius: 0 0 0 10px;
+}
+
+.square_2D.square_2D_m:nth-of-type(225) {
+  border-radius: 0 0 10px 0;
+}
+
+.square_2D.square_2D_m:nth-of-type(15n) {
+  border-right: 2px solid white;
+}
+
+.square_2D.square_2D_m:nth-of-type(-n + 15) {
+  border-top: 2px solid white;
+}
+
+.square_2D.square_2D_m:nth-of-type(n + 210) {
+  border-bottom: 2px solid white;
+}
+
+.square_2D.square_2D_m:nth-of-type(15n + 1) {
+  border-left: 2px solid white;
+}
+
+/* ? CHANGE TO LARGE */
+
+.square_2D.square_2D_l:nth-of-type(n) {
+  border-radius: 0 0 0 0;
+  border: 1px solid white;
+}
+
+.square_2D.square_2D_l:nth-of-type(1) {
+  border-radius: 10px 0 0 0 ;
+}
+.square_2D.square_2D_l:nth-of-type(29) {
+  border-radius: 0 10px 0 0;
+}
+
+.square_2D.square_2D_l:nth-of-type(436) {
+  border-radius: 0 0 0 10px;
+}
+
+.square_2D.square_2D_l:nth-of-type(464) {
+  border-radius: 0 0 10px 0;
+}
+
+.square_2D.square_2D_l:nth-of-type(29n) {
+  border-right: 2px solid white;
+}
+
+.square_2D.square_2D_l:nth-of-type(-n + 29) {
+  border-top: 2px solid white;
+}
+
+.square_2D.square_2D_l:nth-of-type(n + 436) {
+  border-bottom: 2px solid white;
+}
+
+.square_2D.square_2D_l:nth-of-type(29n + 1) {
+  border-left: 2px solid white;
+}
+
 
 .square_2D:hover {
   background-color: rgb(48, 48, 48);
@@ -345,7 +421,9 @@ header {
   background-position: center;
 }
 
-.game_board_container_2D > .bomb {
+.game_board_container_2D > .bomb, 
+.game_board_container_2D > .bomb.square_2D_l, 
+.game_board_container_2D > .bomb.square_2D_m {
   filter: invert(1);
   /* background-image: url(./assets/mine.png);
   background-repeat: no-repeat;
@@ -353,9 +431,13 @@ header {
   background-position: center;
   
    */
-   background-color: white;
-   border-color: black;
+  background-color: white;
+  border-color: black;
   position: relative;
+}
+
+.game_board_container_2D > .bomb {
+
 }
 
 

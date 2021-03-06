@@ -414,12 +414,24 @@ function init() {
     mainContainer.classList.replace('main_container', 'main_container_2D')
     gameContainer.classList.replace('game_board_container', 'game_board_container_2D')
     document.querySelectorAll('#square').forEach(element => element.classList.replace('square', 'square_2D'))
+    if (gameStats.boardWidth === 15) {
+      document.querySelectorAll('#square').forEach(element => element.classList.add('square_2D_m'))
+    }
+    if (gameStats.boardWidth === 29) {
+      document.querySelectorAll('#square').forEach(element => element.classList.add('square_2D_l'))
+    }
   }
 
   function changeTo3D() {
     mainContainer.classList.replace('main_container_2D', 'main_container')
     gameContainer.classList.replace('game_board_container_2D', 'game_board_container')
     document.querySelectorAll('#square').forEach(element => element.classList.replace('square_2D', 'square'))
+    if (gameStats.boardWidth === 15) {
+      document.querySelectorAll('#square').forEach(element => element.classList.remove('square_2D_m'))
+    }
+    if (gameStats.boardWidth === 29) {
+      document.querySelectorAll('#square').forEach(element => element.classList.remove('square_2D_l'))
+    }
   }
 
   function changeBoardSize(event) {
